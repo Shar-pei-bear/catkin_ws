@@ -1,0 +1,7 @@
+logs/
+devel/
+build/
+src/CMakeLists.txt
+src/darknet_ros/
+src/apriltag
+src/apriltag_ros

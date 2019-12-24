@@ -1,0 +1,11 @@
+<launch>
+    <!-- tf2 transforms -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="zed_tf"
+            args="0.06 0 0.2 0.5 -0.5 0.5 -0.5 zed_camera_center zed_left_camera_optical_frame" />
+
+    <node pkg="rosbag" type="play" name="player" output="screen"
+            args="/home/bear/catkin_workspace/bags/SLAM3.bag -q"/>
+
+    <!-- Localization using April tag -->
+    <include file="launch/apriltag_localization.launch" />
+</launch>

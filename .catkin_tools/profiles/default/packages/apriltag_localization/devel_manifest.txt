@@ -1,0 +1,5 @@
+apriltag_localization
+/home/bear/catkin_ws/devel/.private/apriltag_localization/cmake.lock /home/bear/catkin_ws/devel/./cmake.lock
+/home/bear/catkin_ws/devel/.private/apriltag_localization/share/apriltag_localization/cmake/apriltag_localizationConfig-version.cmake /home/bear/catkin_ws/devel/share/apriltag_localization/cmake/apriltag_localizationConfig-version.cmake
+/home/bear/catkin_ws/devel/.private/apriltag_localization/share/apriltag_localization/cmake/apriltag_localizationConfig.cmake /home/bear/catkin_ws/devel/share/apriltag_localization/cmake/apriltag_localizationConfig.cmake
+/home/bear/catkin_ws/devel/.private/apriltag_localization/lib/pkgconfig/apriltag_localization.pc /home/bear/catkin_ws/devel/lib/pkgconfig/apriltag_localization.pc
