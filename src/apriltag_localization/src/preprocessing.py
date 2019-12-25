@@ -173,20 +173,21 @@ class RobotLocalization(object):
             self.pose_synced.append(np.concatenate([o, q]))
 
         self.pose_synced = np.array(self.pose_synced)
+        self.pose_synced[:,2] = 0.1
         np.savetxt('trajectory.txt', self.pose_synced, fmt ='%6.4f', delimiter=' ')
         np.savetxt('detection.txt', self.bbs, fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
         #np.savetxt('test.out', self.pose_synced)
 
 def main(args):
     # Load parameters from yaml
-    param_path = '/home/bear/catkin_ws/src/apriltag_localization/params/params.yaml'
+    param_path = '/home/zhentian/catkin_ws/src/apriltag_localization/params/params.yaml'
     f = open(param_path,'r')
     params_raw = f.read()
     f.close()
     params = yaml.load(params_raw)
     world_map = np.array(params['world_map'])
     # Intialize the RobotControl object
-    bag_filename ='/home/bear/catkin_ws/bags/SLAM2.bag'
+    bag_filename ='/home/zhentian/catkin_ws/bags/SLAM2.bag'
     robotLocalization = RobotLocalization(world_map, bag_filename)
     robotLocalization._tag_pose_callback()
     robotLocalization.bb_callback()

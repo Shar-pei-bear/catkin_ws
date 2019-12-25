@@ -1,1 +1,2 @@
-/home/bear/catkin_ws/devel/./cmake.lock 3
+/home/bear/catkin_ws/devel/./cmake.lock 1
+/home/zhentian/catkin_ws/devel/./cmake.lock 2
