@@ -148,7 +148,6 @@ class RobotLocalization(object):
         data_len = self.bb_times.shape[0]
         for bb_index in range(data_len):
             bb_time = self.bb_times[bb_index]
-
             pose_index1 = np.where(self.pose_times > bb_time)[0][0]
             pose_index0 = pose_index1 - 1
 
@@ -157,14 +156,23 @@ class RobotLocalization(object):
 
             T0 = tf.transformations.quaternion_matrix(self.poses[pose_index0, 0:4])
             T0[:3, 3] = self.poses[pose_index0, 4:7]
+
             T1 = tf.transformations.quaternion_matrix(self.poses[pose_index1, 0:4])
             T1[:3, 3] = self.poses[pose_index1, 4:7]
-            T01 = np.dot(tf.transformations.inverse_matrix(T0), T1)
 
-            angle, direc, point = tf.transformations.rotation_from_matrix(T01)
-            angle = angle*delta_t/t
-            T = tf.transformations.rotation_matrix(angle, direc, point)
-            T = np.dot(T0, T)
+            T01 = np.dot(tf.transformations.inverse_matrix(T0), T1)
+            T10 = np.dot(tf.transformations.inverse_matrix(T1), T0)
+
+            if (delta_t/t > 0.5):
+                angle, direc, point = tf.transformations.rotation_from_matrix(T10)
+                angle = angle* (1 - delta_t/t)
+                T = tf.transformations.rotation_matrix(angle, direc, point)
+                T = np.dot(T1, T)
+            else:
+                angle, direc, point = tf.transformations.rotation_from_matrix(T01)
+                angle = angle*delta_t/t
+                T = tf.transformations.rotation_matrix(angle, direc, point)
+                T = np.dot(T0, T)
 
             q = tf.transformations.quaternion_from_matrix(T)
             o = tf.transformations.translation_from_matrix(T)
@@ -173,8 +181,8 @@ class RobotLocalization(object):
             self.pose_synced.append(np.concatenate([o, q]))
 
         self.pose_synced = np.array(self.pose_synced)
-        self.pose_synced[:,2] = 0.1
-        np.savetxt('trajectory.txt', self.pose_synced, fmt ='%6.4f', delimiter=' ')
+        #self.pose_synced[:,2] = 0.1
+        np.savetxt('trajectories.txt', self.pose_synced, fmt ='%6.4f', delimiter=' ')
         np.savetxt('detection.txt', self.bbs, fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
         #np.savetxt('test.out', self.pose_synced)
 
@@ -192,6 +200,6 @@ def main(args):
     robotLocalization._tag_pose_callback()
     robotLocalization.bb_callback()
     robotLocalization.sync_data()
-    #robotLocalization.plot_results()
+    robotLocalization.plot_results()
 if __name__ == "__main__":
     main(sys.argv)
