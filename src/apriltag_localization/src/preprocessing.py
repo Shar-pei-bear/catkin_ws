@@ -128,7 +128,7 @@ class RobotLocalization(object):
 
     def bb_callback(self):
         for msg in self.bb_msgs:
-            if len(msg.bounding_boxes) == 1 and msg.bounding_boxes[0].Class == 'chair':
+            if len(msg.bounding_boxes) == 1 and msg.bounding_boxes[0].Class == 'laptop':
                 self.bbs.append([msg.bounding_boxes[0].xmin, msg.bounding_boxes[0].ymin,
                 msg.bounding_boxes[0].xmax, msg.bounding_boxes[0].ymax, msg.bounding_boxes[0].probability])
                 self.bb_times.append(msg.image_header.stamp.to_sec())
@@ -140,7 +140,7 @@ class RobotLocalization(object):
         print(len(self.bb_times))
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        ax.plot(self.bb_times, self.pose_synced[: , 6], linewidth = 4)
+        ax.plot(self.pose_synced[: , 0], self.pose_synced[: , 1], linewidth = 4)
         ax.grid(True)
         plt.show()
 
@@ -182,8 +182,8 @@ class RobotLocalization(object):
 
         self.pose_synced = np.array(self.pose_synced)
         #self.pose_synced[:,2] = 0.1
-        np.savetxt('trajectories.txt', self.pose_synced, fmt ='%6.4f', delimiter=' ')
-        np.savetxt('detection.txt', self.bbs, fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
+        np.savetxt('trajectories.txt', self.pose_synced[range(0,300,10)], fmt ='%6.4f', delimiter=' ')
+        np.savetxt('detection.txt', self.bbs[range(0,300,10)], fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
         #np.savetxt('test.out', self.pose_synced)
 
 def main(args):
@@ -195,7 +195,7 @@ def main(args):
     params = yaml.load(params_raw)
     world_map = np.array(params['world_map'])
     # Intialize the RobotControl object
-    bag_filename ='/home/zhentian/catkin_ws/bags/SLAM2.bag'
+    bag_filename ='/home/zhentian/catkin_ws/bags/ORBSLAM_data_set4.bag'
     robotLocalization = RobotLocalization(world_map, bag_filename)
     robotLocalization._tag_pose_callback()
     robotLocalization.bb_callback()

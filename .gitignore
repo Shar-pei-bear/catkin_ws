@@ -1,6 +1,7 @@
 logs/
 devel/
 build/
+bags/
 .catkin_tools/
 src/CMakeLists.txt
 src/darknet_ros/
