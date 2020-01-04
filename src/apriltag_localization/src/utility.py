@@ -41,9 +41,16 @@ def get_T(pose):
     T[0:3, -1] = t
     return T
 
-def get_inter2world(pose):
+def get_tag2world(pose):
     theta = pose[2] * np.pi / 180.
-    T = np.array([[np.sin(theta),0,-np.cos(theta),pose[0]],[-np.cos(theta),0,-np.sin(theta),pose[1]],[0,1,0,0],[0,0,0,1]])
+
+    T_tag2inter = np.array([[1,0,0,0],[0, np.cos(pose[3]), np.sin(pose[3]), np.cos(pose[3])*0.1016],
+    [0, -np.sin(pose[3]), np.cos(pose[3]), -np.sin(pose[3])*0.1016],[0,0,0,1]])
+
+    T_inter2world = np.array([[np.sin(theta), 0, -np.cos(theta), pose[0]],
+    [-np.cos(theta), 0, -np.sin(theta), pose[1]], [0, 1, 0, 0], [0, 0, 0, 1]])
+
+    T = np.dot(T_inter2world, T_tag2inter)
     return T
 
 def make_pose_stamped_msg(T,current_header):
@@ -68,3 +75,13 @@ def make_pose_stamped_msg(T,current_header):
     pose_stamped_msg.pose=pose_msg
 
     return pose_stamped_msg
+
+def rotation_translation_vector(angle, direc, point):
+    """
+    Return translational vector to rotate about axis defined by point and direction.
+    """
+    w = np.asarray([[0, -direc[2], direc[1]],[direc[2], 0, - direc[0]],[-direc[1], direc[0], 0]])
+    v = np.cross(point[0:3], direc)
+    o = np.dot((np.eye(3)*angle + (1 - np.cos(angle))*w + (angle - np.sin(angle))*np.dot(w, w)), v)
+
+    return o
