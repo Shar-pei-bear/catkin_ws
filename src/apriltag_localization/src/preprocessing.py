@@ -168,21 +168,21 @@ class RobotLocalization(object):
             T01 = np.dot(tf.transformations.inverse_matrix(T0), T1)
             T10 = np.dot(tf.transformations.inverse_matrix(T1), T0)
 
-            # if (delta_t/t > 0.5):
-            #     angle, direc, point = tf.transformations.rotation_from_matrix(T10)
-            #     angle = angle* (1 - delta_t/t)
-            #     T = tf.transformations.rotation_matrix(angle, direc, point)
-            #     T = np.dot(T1, T)
-            # else:
-            #     angle, direc, point = tf.transformations.rotation_from_matrix(T01)
-            #     angle = angle*delta_t/t
-            #     T = tf.transformations.rotation_matrix(angle, direc, point)
-            #     T = np.dot(T0, T)
-            angle, direc, point = tf.transformations.rotation_from_matrix(T01)
-            angle = angle*delta_t/t
-            T = tf.transformations.rotation_matrix(angle, direc)
-            T[:3, 3] = rotation_translation_vector(angle, direc, point)
-            T = np.dot(T0, T)
+            if (delta_t/t > 0.5):
+                angle, direc, point = tf.transformations.rotation_from_matrix(T10)
+                angle = angle* (1 - delta_t/t)
+                T = tf.transformations.rotation_matrix(angle, direc, point)
+                T = np.dot(T1, T)
+            else:
+                angle, direc, point = tf.transformations.rotation_from_matrix(T01)
+                angle = angle*delta_t/t
+                T = tf.transformations.rotation_matrix(angle, direc, point)
+                T = np.dot(T0, T)
+            # angle, direc, point = tf.transformations.rotation_from_matrix(T01)
+            # angle = angle*delta_t/t
+            # T = tf.transformations.rotation_matrix(angle, direc)
+            # T[:3, 3] = rotation_translation_vector(angle, direc, point)
+            # T = np.dot(T0, T)
 
             q = tf.transformations.quaternion_from_matrix(T)
             o = tf.transformations.translation_from_matrix(T)
@@ -192,20 +192,20 @@ class RobotLocalization(object):
 
         self.pose_synced = np.array(self.pose_synced)
         #self.pose_synced[:,2] = 0.1
-        np.savetxt('trajectories.txt', self.pose_synced[range(0,self.bb_times.size,10)], fmt ='%6.4f', delimiter=' ')
-        np.savetxt('detection.txt', self.bbs[range(0,self.bb_times.size,10)], fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
+        np.savetxt('trajectories.txt', self.pose_synced[range(0,self.bb_times.size, 60)], fmt ='%6.4f', delimiter=' ')
+        np.savetxt('detection.txt', self.bbs[range(0,self.bb_times.size, 60)], fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
         #np.savetxt('test.out', self.pose_synced)
 
 def main(args):
     # Load parameters from yaml
-    param_path = '/home/zhentian/catkin_ws/src/apriltag_localization/params/params.yaml'
+    param_path = '/home/bear/catkin_ws/src/apriltag_localization/params/params.yaml'
     f = open(param_path,'r')
     params_raw = f.read()
     f.close()
     params = yaml.load(params_raw)
     world_map = np.array(params['world_map'])
     # Intialize the RobotControl object
-    bag_filename ='/home/zhentian/catkin_ws/bags/ORBSLAM_data_set4.bag'
+    bag_filename ='/home/bear/catkin_ws/bags/ORBSLAM_data_set4.bag'
     robotLocalization = RobotLocalization(world_map, bag_filename)
     robotLocalization._tag_pose_callback()
     robotLocalization.bb_callback()
