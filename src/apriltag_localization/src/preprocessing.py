@@ -192,8 +192,8 @@ class RobotLocalization(object):
 
         self.pose_synced = np.array(self.pose_synced)
         #self.pose_synced[:,2] = 0.1
-        np.savetxt('trajectories.txt', self.pose_synced[range(0,self.bb_times.size, 60)], fmt ='%6.4f', delimiter=' ')
-        np.savetxt('detection.txt', self.bbs[range(0,self.bb_times.size, 60)], fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
+        np.savetxt('trajectories.txt', self.pose_synced[range(0,self.bb_times.size, 200)], fmt ='%6.4f', delimiter=' ')
+        np.savetxt('detection.txt', self.bbs[range(0,self.bb_times.size, 200)], fmt =['%i', '%i', '%i', '%i', '%4.2f'], delimiter=' ')
         #np.savetxt('test.out', self.pose_synced)
 
 def main(args):
